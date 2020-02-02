@@ -17,8 +17,11 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 	
+	private AuthenticationManager authenticationManager;
+	
 	public AuthorizationFilter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
+		this.authenticationManager = authenticationManager;
 	}
 
 	@Override
@@ -32,7 +35,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 		}
 
 		UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(authHeader);
-
+		
+		authenticationManager.authenticate(authenticationToken);
+		
 		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
 		chain.doFilter(request, response);
